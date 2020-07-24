@@ -53,7 +53,10 @@
                     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#editBook{{$b->id_book}}">
                         Edit Book
                     </button>
-                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteBook{{$b->id_book}}">
+                    {{--  <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteBook{{$b->id_book}}">
+                        Delete Book
+                    </button>  --}}
+                    <button type="button" class="btn btn-danger" onclick="deleteBook({{$b->id_book}})">
                         Delete Book
                     </button>
                 </div>
@@ -99,7 +102,7 @@
                         <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form action="/deleteBook" method="post">
+                    <form action="/deleteBook" id="deleteBook" method="post">
                         {{ csrf_field() }}
                         <div class="modal-body">
                             <input type="hidden" id="id_lib" name="id_lib" value="{{$lib->id_lib}}">
@@ -147,6 +150,7 @@
         </div>
     </div>
     @endforeach
+    @include('sweetalert::alert')
 
   </div>
   <!-- /.container -->
@@ -157,25 +161,41 @@
   <!-- Bootstrap core JavaScript -->
   <script src="/assets/vendor/jquery/jquery.min.js"></script>
   <script src="/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 
   <script>
-    Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-      }).then((result) => {
-        if (result) {
-         axios.delete('your/route').then(() => {
-             window.location.href = '/tags/tag'
-         });
+    function deleteBook($id_book){
+            var param = $id_book
+            console.log(param);
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Data for this book will be lost permanently!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        url: "/deleteBook/"+param,
+                        type: "get",
+                        success: function(){
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'success',
+                                title: 'Book already deleted!',
+                                showConfirmButton: false,
+                                timer: 1500,
+                            })
+                            location.reload();
+                        }
+                    });
+
+                }
+            })
         }
-      })
-  </script>
+    </script>
 
 </body>
 

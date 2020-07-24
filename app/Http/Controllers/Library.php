@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class Library extends Controller
 {
@@ -13,6 +14,7 @@ class Library extends Controller
     }
 
     public function getLibrary(){
+        // Alert::success('Success', 'Login Successfull');
         $library = DB::table('tb_library')->get();
         $book = DB::table('tb_book')->where('id_lib',1)->get();
 
@@ -69,5 +71,10 @@ class Library extends Controller
     {
         DB::table('tb_book')->where('id_book',$request->id_book)->delete();
 		return redirect('/booklist/'.$request->id_lib);
+    }
+
+    public function deleteBookAct($id_book)
+    {
+        DB::table('tb_book')->where('id_book',$id_book)->delete();
     }
 }
